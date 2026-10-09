@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Captura de expediente · Hospital</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container">
+    <div class="brand"><div class="logo">✚</div>Hospital Materno Infantil "Vicente Guerrero"</div>
+    <div class="actions">
+      <span class="user" id="userEmail"></span>
+      <a href="buscar.html" class="btn btn-outline btn-sm">🔎 Buscar expedientes</a>
+      <button class="btn btn-ghost btn-sm" id="btnLogout">Cerrar sesión</button>
+    </div>
+  </div>
+</header>
+
+<main class="container page">
+  <h1>Nuevo expediente digital</h1>
+  <p class="sub">El folio y la fecha/hora de apertura se asignan automáticamente al guardar.</p>
+
+  <form id="formExpediente" class="panel" novalidate>
+    <fieldset>
+      <legend>Datos del paciente</legend>
+      <div class="grid">
+        <div class="field full">
+          <label for="nombre">Nombre completo del paciente</label>
+          <input type="text" id="nombre" required placeholder="Apellido paterno, materno y nombre(s)">
+        </div>
+        <div class="field">
+          <label for="fechaNacimiento">Fecha de nacimiento</label>
+          <input type="date" id="fechaNacimiento" required>
+        </div>
+        <div class="field">
+          <label for="edad">Edad</label>
+          <input type="text" id="edad" readonly placeholder="Se calcula automáticamente">
+        </div>
+        <div class="field">
+          <label>Sexo</label>
+          <div class="radio-row">
+            <label><input type="radio" name="sexo" value="Masculino" required> Masculino</label>
+            <label><input type="radio" name="sexo" value="Femenino" required> Femenino</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="curp">CURP</label>
+          <input type="text" id="curp" maxlength="18" required
+                 placeholder="18 caracteres" style="text-transform:uppercase">
+          <p class="hint" id="curpHint"></p>
+        </div>
+        <div class="field full">
+          <label for="domicilio">Domicilio del paciente</label>
+          <input type="text" id="domicilio" required placeholder="Calle, número, colonia, ciudad, C.P.">
+        </div>
+        <div class="field">
+          <label for="telefono">Número de contacto</label>
+          <input type="tel" id="telefono" required placeholder="10 dígitos" pattern="[0-9]{10}">
+        </div>
+        <div class="field">
+          <label>¿Cuenta con carnet de citas?</label>
+          <div class="radio-row">
+            <label><input type="radio" name="carnet" value="Sí" required> Sí</label>
+            <label><input type="radio" name="carnet" value="No" required> No</label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Movimientos del expediente</legend>
+      <div class="grid">
+        <div class="field">
+          <label for="fechaMovimiento">Fecha de movimiento</label>
+          <input type="date" id="fechaMovimiento">
+        </div>
+        <div class="field">
+          <label for="fechaIngreso">Fecha de ingreso</label>
+          <input type="date" id="fechaIngreso">
+        </div>
+        <div class="field">
+          <label for="fechaEgreso">Fecha de egreso</label>
+          <input type="date" id="fechaEgreso">
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Código mater</legend>
+      <div class="radio-row">
+        <label><input type="radio" name="codigoMater" id="materNo" value="No" checked required> No</label>
+        <label><input type="radio" name="codigoMater" id="materSi" value="Sí" required> Sí</label>
+      </div>
+      <div class="field" id="campoCasoMater" style="display:none;margin-top:12px">
+        <label for="numCasoMater">Número de caso de código mater</label>
+        <input type="text" id="numCasoMater" placeholder="Ej. CM-2026-0001">
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" id="btnGuardar" type="submit">Guardar expediente</button>
+      <button class="btn btn-ghost" type="reset">Limpiar formulario</button>
+    </div>
+    <div class="msg" id="msg"></div>
+  </form>
+</main>
+
+<script type="module">
+  import { requiereSesion, initLogout } from "./js/auth.js";
+  import { initExpediente } from "./js/expediente.js";
+  requiereSesion();
+  initLogout();
+  initExpediente();
+</script>
+</body>
+</html>

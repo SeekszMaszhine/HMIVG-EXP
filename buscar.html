@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buscar expedientes · Hospital</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container">
+    <div class="brand"><div class="logo">✚</div>Hospital Materno Infantil "Vicente Guerrero"</div>
+    <div class="actions">
+      <span class="user" id="userEmail"></span>
+      <a href="captura.html" class="btn btn-outline btn-sm">＋ Nuevo expediente</a>
+      <button class="btn btn-ghost btn-sm" id="btnLogout">Cerrar sesión</button>
+    </div>
+  </div>
+</header>
+
+<main class="container page">
+  <h1>Buscar expedientes</h1>
+  <p class="sub">Localiza expedientes por número de folio, nombre del paciente o CURP.</p>
+
+  <form id="formBuscar" class="search-bar">
+    <select id="criterio">
+      <option value="numero">Número de expediente</option>
+      <option value="nombre">Nombre del paciente</option>
+      <option value="curp">CURP</option>
+    </select>
+    <input type="text" id="busqueda" required placeholder="Ej. 26-89001">
+    <button class="btn btn-primary" type="submit">🔎 Buscar</button>
+  </form>
+
+  <div class="panel results" id="resultados">
+    <p class="empty">Ingresa un criterio y presiona <b>Buscar</b>.</p>
+  </div>
+</main>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h2>Detalle del expediente</h2>
+    <div class="kv" id="detalle"></div>
+    <div class="close-row">
+      <button class="btn btn-ghost" id="btnCerrarModal">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { requiereSesion, initLogout } from "./js/auth.js";
+  import { initBusqueda, initModal } from "./js/buscar.js";
+  requiereSesion();
+  initLogout();
+  initBusqueda();
+  initModal();
+</script>
+</body>
+</html>
