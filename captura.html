@@ -13,16 +13,28 @@
     <div class="actions">
       <span class="user" id="userEmail"></span>
       <a href="buscar.html" class="btn btn-outline btn-sm">🔎 Buscar expedientes</a>
+      <a href="importar.html" class="btn btn-outline btn-sm">⬆ Importar</a>
       <button class="btn btn-ghost btn-sm" id="btnLogout">Cerrar sesión</button>
     </div>
   </div>
 </header>
 
 <main class="container page">
-  <h1>Nuevo expediente digital</h1>
-  <p class="sub">El folio y la fecha/hora de apertura se asignan automáticamente al guardar.</p>
+  <h1 id="tituloPagina">Nuevo expediente digital</h1>
+  <p class="sub" id="subPagina">La fecha/hora de apertura se asigna automáticamente al guardar; el folio lo asigna el capturista.</p>
 
   <form id="formExpediente" class="panel" novalidate>
+    <fieldset>
+      <legend>Identificación del expediente</legend>
+      <div class="grid">
+        <div class="field">
+          <label for="folio">Número de expediente (XX-XXXXX)</label>
+          <input type="text" id="folio" required placeholder="Ej. 26-89001" maxlength="8">
+          <p class="hint" id="folioHint"></p>
+        </div>
+      </div>
+    </fieldset>
+
     <fieldset>
       <legend>Datos del paciente</legend>
       <div class="grid">
@@ -94,7 +106,7 @@
         <label><input type="radio" name="codigoMater" id="materSi" value="Sí" required> Sí</label>
       </div>
       <div class="field" id="campoCasoMater" style="display:none;margin-top:12px">
-        <label for="numCasoMater">Número de caso de código mater</label>
+        <label for="numCasoMater">Número de caso de código mater <em style="font-weight:400;color:var(--muted)">(opcional)</em></label>
         <input type="text" id="numCasoMater" placeholder="Ej. CM-2026-0001">
       </div>
     </fieldset>

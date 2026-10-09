@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Importar expedientes · Hospital</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container">
+    <div class="brand"><div class="logo">✚</div>Hospital Materno Infantil "Vicente Guerrero"</div>
+    <div class="actions">
+      <span class="user" id="userEmail"></span>
+      <a href="captura.html" class="btn btn-outline btn-sm">＋ Nuevo expediente</a>
+      <a href="buscar.html" class="btn btn-outline btn-sm">🔎 Buscar</a>
+      <button class="btn btn-ghost btn-sm" id="btnLogout">Cerrar sesión</button>
+    </div>
+  </div>
+</header>
+
+<main class="container page">
+  <h1>Carga masiva de expedientes</h1>
+  <p class="sub">Importa expedientes desde un archivo de <b>Excel (.xlsx)</b> o <b>CSV</b>.
+     Si tus datos están en <b>Access</b>, exporta la tabla a Excel primero
+     (Archivo → Guardar como → Excel).</p>
+
+  <div class="panel">
+    <fieldset>
+      <legend>1 · Descarga la plantilla (opcional)</legend>
+      <p class="hint" style="margin-bottom:10px">
+        Columnas esperadas en la primera fila (encabezados):
+        <code>expediente, nombre, fecha_nacimiento, sexo, curp, domicilio, telefono,
+        carnet_citas, fecha_movimiento, fecha_ingreso, fecha_egreso, codigo_mater, numero_caso_mater</code>
+      </p>
+      <button class="btn btn-outline btn-sm" id="btnPlantilla" type="button">⬇ Descargar plantilla CSV</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>2 · Selecciona el archivo</legend>
+      <div class="field">
+        <input type="file" id="archivo" accept=".xlsx,.xls,.csv" required>
+        <p class="hint">Fechas en formato AAAA-MM-DD. El folio debe tener formato XX-XXXXX.</p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>3 · Revisa y carga</legend>
+      <div id="preview" style="overflow-x:auto"></div>
+      <div class="form-actions" id="accionesCarga" style="display:none">
+        <button class="btn btn-primary" id="btnCargar" type="button">Cargar expedientes</button>
+      </div>
+      <div class="msg" id="msg"></div>
+    </fieldset>
+  </div>
+</main>
+
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+<script type="module">
+  import { requiereSesion, initLogout } from "./js/auth.js";
+  import { initImportar } from "./js/importar.js";
+  requiereSesion();
+  initLogout();
+  initImportar();
+</script>
+</body>
+</html>
