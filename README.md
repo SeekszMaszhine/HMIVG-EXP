@@ -17,9 +17,3 @@ datos en la nube (Firebase Firestore), autenticación por correo/contraseña
 - **Código mater:** al seleccionar "Sí" se exige el número de caso.
 - **Búsqueda:** por folio exacto, nombre (prefijo) o CURP.
 
-## Nota sobre RENAPO
-RENAPO **no ofrece un API público**; la consulta directa requiere convenio/
-contrato con la SEGOB y se implementa normalmente con una Cloud Function
-backend. En `js/expediente.js` la función `verificaCURP()` queda como hook
-listo para conectar esa verificación; la app ya valida formato y coherencia
-automáticamente del lado del cliente.
