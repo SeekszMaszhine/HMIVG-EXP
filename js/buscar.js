@@ -6,7 +6,6 @@ import {
 
 const $ = (s) => document.querySelector(s);
 const fmt = (t) => t?.toDate ? t.toDate().toLocaleString("es-MX") : "—";
-const fD = (t) => t?.toDate ? t.toDate().toLocaleDateString("es-MX") : "—";
 
 export function initBusqueda() {
   const form = $("#formBuscar");
@@ -19,28 +18,25 @@ export function initBusqueda() {
     const cont = $("#resultados");
     cont.innerHTML = "<p class='empty'>Buscando…</p>";
 
-    let expedientes = [];
+    let docs = [];
 
     try {
+      let q;
       if (criterio === "numero") {
-        const q = query(collection(db, "expedientes"),
-          where("numeroExpediente", "==", valor));
-        expedientes = (await getDocs(q)).docs.map(d => d.data());
+        q = query(collection(db, "expedientes"), where("numeroExpediente", "==", valor));
       } else if (criterio === "curp") {
-        const q = query(collection(db, "expedientes"),
-          where("curp", "==", valor.toUpperCase()));
-        expedientes = (await getDocs(q)).docs.map(d => d.data());
-      } else { // nombre (prefijo)
-        const q = query(collection(db, "expedientes"),
+        q = query(collection(db, "expedientes"), where("curp", "==", valor.toUpperCase()));
+      } else {
+        q = query(collection(db, "expedientes"),
           orderBy("nombreLower"), startAt(valor.toLowerCase()), endAt(valor.toLowerCase() + "\uf8ff"));
-        expedientes = (await getDocs(q)).docs.map(d => d.data());
       }
+      docs = (await getDocs(q)).docs.map(d => ({ id: d.id, ...d.data() }));
     } catch (err) {
       cont.innerHTML = `<p class="empty">Error en la búsqueda: ${err.message}</p>`;
       return;
     }
 
-    if (!expedientes.length) {
+    if (!docs.length) {
       cont.innerHTML = "<p class='empty'>No se encontraron expedientes con ese criterio.</p>";
       return;
     }
@@ -52,21 +48,28 @@ export function initBusqueda() {
           <th>Código mater</th><th>Apertura</th><th></th>
         </tr></thead>
         <tbody>
-          ${expedientes.map((x, i) => `
+          ${docs.map((x, i) => `
             <tr>
               <td><span class="tag tag-blue">${x.numeroExpediente}</span></td>
               <td>${x.nombre}</td>
               <td>${x.curp}</td>
               <td>${x.sexo === "Femenino" ? '<span class="tag tag-teal">F</span>' : '<span class="tag tag-gray">M</span>'}</td>
-              <td>${x.codigoMater ? `<span class="tag tag-red">SÍ · ${x.numeroCasoMater || ""}</span>` : '<span class="tag tag-gray">No</span>'}</td>
+              <td>${x.codigoMater ? `<span class="tag tag-red">SÍ${x.numeroCasoMater ? " · " + x.numeroCasoMater : ""}</span>` : '<span class="tag tag-gray">No</span>'}</td>
               <td>${fmt(x.fechaHoraApertura)}</td>
-              <td><button class="btn btn-outline btn-sm" data-i="${i}">Ver</button></td>
+              <td style="white-space:nowrap">
+                <button class="btn btn-outline btn-sm" data-ver="${i}">Ver</button>
+                <button class="btn btn-primary btn-sm" data-edit="${x.id}">Editar</button>
+              </td>
             </tr>`).join("")}
         </tbody>
       </table>`;
 
-    cont.querySelectorAll("button[data-i]").forEach(btn =>
-      btn.addEventListener("click", () => mostrarDetalle(expedientes[+btn.dataset.i])));
+    cont.querySelectorAll("button[data-ver]").forEach(btn =>
+      btn.addEventListener("click", () => mostrarDetalle(docs[+btn.dataset.ver])));
+    cont.querySelectorAll("button[data-edit]").forEach(btn =>
+      btn.addEventListener("click", () => {
+        window.location.href = `captura.html?id=${btn.dataset.edit}`;
+      }));
   });
 }
 
@@ -75,8 +78,8 @@ function mostrarDetalle(x) {
   $("#detalle").innerHTML = `
     ${kv("Número de expediente", `<b>${x.numeroExpediente}</b>`)}
     ${kv("Nombre", x.nombre)}
-    ${kv("Fecha de nacimiento", fD(x.fechaHoraNac ? x.fechaHoraNac : null) || x.fechaNacimiento)}
-    ${kv("Edad", x.edad + " años")}
+    ${kv("Fecha de nacimiento", x.fechaNacimiento)}
+    ${kv("Edad", (x.edad ?? "—") + (x.edad != null ? " años" : ""))}
     ${kv("Apertura del expediente", fmt(x.fechaHoraApertura))}
     ${kv("CURP", x.curp + (x.curpVerificada ? " ✓" : ""))}
     ${kv("Domicilio", x.domicilio)}
@@ -86,8 +89,9 @@ function mostrarDetalle(x) {
     ${kv("Carnet de citas", x.carnetCitas)}
     ${kv("Teléfono", x.telefono)}
     ${kv("Sexo", x.sexo)}
-    ${kv("Código mater", x.codigoMater ? `SÍ · Caso ${x.numeroCasoMater}` : "No")}
+    ${kv("Código mater", x.codigoMater ? `SÍ${x.numeroCasoMater ? " · Caso " + x.numeroCasoMater : " · sin número de caso"}` : "No")}
     ${kv("Registrado por", x.creadoPor)}
+    ${kv("Última edición", x.ultimaEdicionPor ? `${x.ultimaEdicionPor} · ${fmt(x.fechaUltimaEdicion)}` : "—")}
   `;
   $("#modal").classList.add("open");
 }
